@@ -1,56 +1,37 @@
 name: mod2-bgp
-
-
 topology:
   nodes:
-    lan1:
-      kind: linux
-      image: exabgp
-      binds:
-        - mod2-bird-confs:/etc/bird-alt/
-      entrypoint: /bin/bash
-
     rtrA:
       kind: linux
-      image: ekellercu/network-testing:v0.1
+      image: ghcr.io/hellt/networking-bird:latest
       binds:
-        - mod2-bird-confs:/etc/bird-alt/
+        - mod2-bird-confs/rtrA-bird.conf:/etc/bird/bird.conf
     rtrB:
       kind: linux
-      image: ekellercu/network-testing:v0.1
+      image: ghcr.io/hellt/networking-bird:latest
       binds:
-        - mod2-bird-confs:/etc/bird-alt/
+        - mod2-bird-confs/rtrB-bird.conf:/etc/bird/bird.conf
     rtrC:
       kind: linux
-      image: ekellercu/network-testing:v0.1
+      image: ghcr.io/hellt/networking-bird:latest
       binds:
-        - mod2-bird-confs:/etc/bird-alt/
+        - mod2-bird-confs/rtrC-bird.conf:/etc/bird/bird.conf
     rtrD:
       kind: linux
-      image: ekellercu/network-testing:v0.1
+      image: ghcr.io/hellt/networking-bird:latest
       binds:
-        - mod2-bird-confs:/etc/bird-alt/
-
-
-
-
+        - mod2-bird-confs/rtrD-bird.conf:/etc/bird/bird.conf
+    lan1:
+      kind: linux
+      image: alpine:3
     lan2:
       kind: linux
-      image: ekellercu/network-testing:v0.1
-      #binds: 
-      #  - mod2-lan2:/lab-folder
-
+      image: alpine:3
   links:
-    - endpoints: ["lan1:eth1", "rtrA:eth1"]
-
-    - endpoints: ["rtrA:eth2", "rtrB:eth1"]
-    - endpoints: ["rtrA:eth3", "rtrC:eth1"]
-
-    - endpoints: ["rtrD:eth2", "rtrB:eth2"]
-    - endpoints: ["rtrD:eth3", "rtrC:eth2"]
-
-    - endpoints: ["lan2:eth1", "rtrD:eth1"]
-
-
-
-
+    - endpoints: ["rtrA:eth1", "rtrB:eth1"]
+    - endpoints: ["rtrA:eth2", "rtrC:eth1"]
+    - endpoints: ["rtrB:eth2", "rtrD:eth1"]
+    - endpoints: ["rtrC:eth2", "rtrD:eth2"]
+    - endpoints: ["rtrA:eth3", "lan1:eth1"]
+    - endpoints: ["rtrD:eth3", "lan2:eth1"]
+    - endpoints: ["rtrB:eth3", "rtrC:eth3"]
